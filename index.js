@@ -27,9 +27,11 @@ const postSchema = new mongoose.Schema({
   const Post = mongoose.model('Post', postSchema);
 
 
-app.get('/posts', async (req, res) => {
+  //Get all posts
+app.get('/get-posts', async (req, res) => {
     try {
-        const userId = req.headers['user-id'];
+      const userId = req.headers['user-id'];
+      console.log("userid",userId);
         const posts = await Post.find({ userId }).exec();
         res.send(posts);
       } catch (err) {
@@ -39,7 +41,7 @@ app.get('/posts', async (req, res) => {
 });
 
 //Create Post
-app.post('/posts', async (req, res) => {
+app.post('/create-posts', async (req, res) => {
     try {
         const { userId, title, body } = req.body;
         if (!title) {
