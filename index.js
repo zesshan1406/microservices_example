@@ -26,8 +26,9 @@ const commentSchema = new mongoose.Schema({
   //Get all comments from post
 app.get('/get-comments/', async (req, res) => {
     try {
-      const postId = req.headers['post-id'];
+      const postId = req.header('Post-Id');
       console.log("postid",postId);
+      console.log("headers",req.headers)
         const comments = await Comment.find({ postId }).exec();
         res.send(comments);
       } catch (err) {
@@ -39,7 +40,7 @@ app.get('/get-comments/', async (req, res) => {
 
 //Post comments to a post 
 
-app.post('/post-comment/', async (req, res) => {
+app.post('/post-comments/', async (req, res) => {
     try {
         const {postId , comment} = req.body
         const comments = new Comment({
@@ -58,5 +59,5 @@ app.post('/post-comment/', async (req, res) => {
  
 
 app.listen(port, () => {
-  console.log(`User microservice listening at http://localhost:${port}`);
+  console.log(`Comment microservice listening at http://localhost:${port}`);
 });
