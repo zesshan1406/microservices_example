@@ -7,14 +7,19 @@ const axios = require('axios');
 
 connectDB();
 var userID = '';
+
+
  // Define User schema
  const userSchema = new mongoose.Schema({
     username: String,
     password: String
 });
+
+
 // Define User model
 const User = mongoose.model('User', userSchema);
 app.use(express.json());
+
 
 //register User
 app.post('/register', async (req, res) => {
@@ -27,6 +32,8 @@ app.post('/register', async (req, res) => {
       res.status(500).send('Server error');
     }
   });
+
+
 //authenticate User
 app.post('/login', async (req, res) => {
     try {
@@ -63,7 +70,7 @@ app.post('/login', async (req, res) => {
         })
         .catch(error => {
           console.error(error);
-          // Handle error from post microservice
+        // Handle error from post microservice
           res.status(500).send('Error getting posts');
         });
       
@@ -106,6 +113,68 @@ app.post('/login', async (req, res) => {
     }
     
   });
+
+
+
+
+  //Get comments from a specific post
+  
+  app.get('/get-comments', async (req, res) => {
+    if(userID){
+      const headers = {
+        'Post-Id':'645349885df3b3d6119cb9fc'
+      }
+          axios.get('http://localhost:3002/get-comments',{headers:headers}) //{headers: headers})
+        .then(response => {
+          console.log(response.data);
+          // Handle successful response from post microservice
+          res.send(response.data);
+        })
+        .catch(error => {
+          console.error(error);
+          // Handle error from post microservice
+          res.status(500).send('Error retrieving comments');
+        });
+      
+    
+    }
+    else{
+      res.send("Please login first before retrieving comments")
+    }
+    
+  });
+
+
+  //Post comments from a specific post
+  
+  app.post('/post-comments', async (req, res) => {
+    if(userID){
+      const { postId, comment } = req.body;
+      const postData = {
+        postId: postId,
+        comment: comment,
+      }
+     
+          axios.post('http://localhost:3002/post-comments',postData) //{headers: headers})
+        .then(response => {
+          console.log(response.data);
+          // Handle successful response from post microservice
+          res.send("Comment Posted");
+        })
+        .catch(error => {
+          console.error(error);
+          // Handle error from post microservice
+          res.status(500).send('Error posting comments');
+        });
+      
+    
+    }
+    else{
+      res.send("Please login first before retrieving comments")
+    }
+    
+  });
+
 
 
  
