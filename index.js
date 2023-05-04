@@ -45,6 +45,37 @@ app.post('/login', async (req, res) => {
     }
   });
 
+  //Calling Post Microservice by getting all posts made by logged in users
+
+  app.get('/get-all-posts', async (req, res) => {
+    if(userID){
+      const headers = {
+        'user-id': userID
+      }
+      
+        axios.get('http://localhost:3001/get-posts', {
+          headers: headers
+        })
+        .then(response => {
+          console.log(response.data);
+          // Handle successful response from post microservice
+          res.send('All posts retrieved successfully');
+        })
+        .catch(error => {
+          console.error(error);
+          // Handle error from post microservice
+          res.status(500).send('Error getting posts');
+        });
+      
+    
+    }
+    else{
+      res.send("Please login first before getting all posts")
+    }
+    
+  });
+
+
   //Calling Post Microservice by creating a post.
 
   app.post('/create-post', async (req, res) => {
@@ -56,7 +87,7 @@ app.post('/login', async (req, res) => {
         userId: userID
 
       }
-        axios.post('http://localhost:3001/posts', postData)
+        axios.post('http://localhost:3001/create-posts', postData)
         .then(response => {
           console.log(response.data);
           // Handle successful response from post microservice
