@@ -23,18 +23,18 @@ const commentSchema = new mongoose.Schema({
   // Create the Comment model using the schema
   const Comment = mongoose.model('Comment', commentSchema);
 
-  //Get all comments from post
+ //Get all comments from post
 app.get('/get-comments/', async (req, res) => {
-    try {
-      const postId = req.header('Post-Id');
-      console.log("postid",postId);
-      console.log("headers",req.headers)
-        const comments = await Comment.find({ postId }).exec();
-        res.send(comments);
-      } catch (err) {
-        console.error(err);
-        res.status(500).send('Server error');
-      }
+  try {
+    const postId = req.query.postId;
+    console.log("postid", postId);
+    console.log("query", req.query)
+    const comments = await Comment.find({ postId }).exec();
+    res.send(comments);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
 });
 
 
@@ -47,8 +47,8 @@ app.post('/post-comments/', async (req, res) => {
             postId,
             comment
           });
-        await comments.save();
-        res.send('Comments posted');
+       const result =  await comments.save();
+        res.send({message:'Comment Posted!',description:result});
       } catch (err) {
         console.error(err);
         res.status(500).send('Server error');
