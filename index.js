@@ -26,6 +26,19 @@ const postSchema = new mongoose.Schema({
   // Create the Post model using the schema
   const Post = mongoose.model('Post', postSchema);
 
+ //Get all posts regardless of the user
+ app.get('/get-all-posts', async (req, res) => {
+  try {
+      const posts = await Post.find().exec();
+      res.send(posts);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Server error');
+    }
+});
+
+
+
 
   //Get all posts
 app.get('/get-posts', async (req, res) => {
@@ -53,8 +66,8 @@ app.post('/create-posts', async (req, res) => {
           title,
           body
         });
-        await post.save();
-        res.send('Post created');
+       const result =  await post.save();
+        res.send({message:'Post Created!',description:result});
       } catch (err) {
         console.error(err);
         res.status(500).send('Server error');
